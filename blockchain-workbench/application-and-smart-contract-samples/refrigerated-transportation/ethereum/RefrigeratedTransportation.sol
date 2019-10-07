@@ -1,28 +1,7 @@
-pragma solidity ^0.4.20;
+pragma solidity >=0.4.25 <0.6.0;
 
-contract WorkbenchBase {
-    event WorkbenchContractCreated(string applicationName, string workflowName, address originatingAddress);
-    event WorkbenchContractUpdated(string applicationName, string workflowName, string action, address originatingAddress);
-
-    string internal ApplicationName;
-    string internal WorkflowName;
-
-    function WorkbenchBase(string applicationName, string workflowName) internal {
-        ApplicationName = applicationName;
-        WorkflowName = workflowName;
-    }
-
-    function ContractCreated() internal {
-        WorkbenchContractCreated(ApplicationName, WorkflowName, msg.sender);
-    }
-
-    function ContractUpdated(string action) internal {
-        WorkbenchContractUpdated(ApplicationName, WorkflowName, action, msg.sender);
-    }
-}
-
-contract RefrigeratedTransportation is WorkbenchBase('RefrigeratedTransportation', 'RefrigeratedTransportation') {
-
+contract RefrigeratedTransportation
+{
     //Set of States
     enum StateType { Created, InTransit, Completed, OutOfCompliance}
     enum SensorType { None, Humidity, Temperature }
@@ -46,7 +25,7 @@ contract RefrigeratedTransportation is WorkbenchBase('RefrigeratedTransportation
     string public  ComplianceDetail;
     int public  LastSensorUpdateTimestamp;
 
-    function RefrigeratedTransportation(address device, address supplyChainOwner, address supplyChainObserver, int minHumidity, int maxHumidity, int minTemperature, int maxTemperature) public
+    constructor(address device, address supplyChainOwner, address supplyChainObserver, int minHumidity, int maxHumidity, int minTemperature, int maxTemperature) public
     {
         ComplianceStatus = true;
         ComplianceSensorReading = -1;
@@ -61,8 +40,7 @@ contract RefrigeratedTransportation is WorkbenchBase('RefrigeratedTransportation
         MinTemperature = minTemperature;
         MaxTemperature = maxTemperature;
         State = StateType.Created;
-        ComplianceDetail = 'N/A';
-        ContractCreated();
+        ComplianceDetail = "N/A";
     }
 
     function IngestTelemetry(int humidity, int temperature, int timestamp) public
@@ -91,14 +69,14 @@ contract RefrigeratedTransportation is WorkbenchBase('RefrigeratedTransportation
         {
             ComplianceSensorType = SensorType.Humidity;
             ComplianceSensorReading = humidity;
-            ComplianceDetail = 'Humidity value out of range.';
+            ComplianceDetail = "Humidity value out of range.";
             ComplianceStatus = false;
         }
         else if (temperature > MaxTemperature || temperature < MinTemperature)
         {
             ComplianceSensorType = SensorType.Temperature;
             ComplianceSensorReading = temperature;
-            ComplianceDetail = 'Temperature value out of range.';
+            ComplianceDetail = "Temperature value out of range.";
             ComplianceStatus = false;
         }
 
@@ -106,8 +84,6 @@ contract RefrigeratedTransportation is WorkbenchBase('RefrigeratedTransportation
         {
             State = StateType.OutOfCompliance;
         }
-
-        ContractUpdated('IngestTelemetry');
     }
 
     function TransferResponsibility(address newCounterparty) public
@@ -141,7 +117,6 @@ contract RefrigeratedTransportation is WorkbenchBase('RefrigeratedTransportation
 
         PreviousCounterparty = Counterparty;
         Counterparty = newCounterparty;
-        ContractUpdated('TransferResponsibility');
     }
 
     function Complete() public
@@ -165,7 +140,6 @@ contract RefrigeratedTransportation is WorkbenchBase('RefrigeratedTransportation
 
         State = StateType.Completed;
         PreviousCounterparty = Counterparty;
-        Counterparty = 0x0;
-        ContractUpdated('Complete');
+        Counterparty = 0x0000000000000000000000000000000000000000;
     }
 }

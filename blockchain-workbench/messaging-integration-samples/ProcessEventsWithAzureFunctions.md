@@ -30,35 +30,21 @@ Create and configure a new Function App
 
 2.  In the function body, paste the following snippet :
 
->   public static void Run(JObject eventGridEvent, TraceWriter log, out object
->   document)
+    ```csharp
+    public static void Run(JObject eventGridEvent, TraceWriter log, out object document)
+    {
+       document = null;
+       String messageName = eventGridEvent["data"]["messageName"].ToString();
 
->   {
-
->   document = null;
-
->   String operationName = eventGridEvent["data"]["OperationName"].ToString();
-
->   switch(operationName)
-
->   {
-
->   case "AccountCreated":
-
->   case "ContractInsertedOrUpdated":
-
->   case "UpdateUserBalance":
-
->   case "InsertBlock":
-
->   case "InsertTransaction":
-
->   break;
-
->   }
-
->   }
-
+       switch(messageName)
+       {
+           case "BlockMessage":
+           case "ContractMessage":
+           case "EventMessage":
+           break;
+       }
+    }
+    ```
 
 Each of the case statements identifies which type of message is being delivered from Workbench via the event grid.
 
@@ -68,10 +54,8 @@ Full details on the data contained within the different message types and C\# re
 [here](https://docs.microsoft.com/en-us/azure/blockchain-workbench/blockchain-workbench-messages-overview).
 
 1.  Add the Event Grid subscription by clicking on the link next to the Run
-    button. Choose the topic type as “Even Grid Topics” and select the event
+    button. Choose the topic type as “Event Grid Topics” and select the event
     grid from your workbench deployment to listen to the messages.
-
-    ![](media/8e1c62de958cfdd7fba0ffe616260521.png)
 
 2.  Once the event grid subscription is added successfully, you can run the
     Azure function.

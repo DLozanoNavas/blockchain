@@ -1,53 +1,45 @@
 # Azure Blockchain Workbench Upgrade
 
 
-
 Overview
 =================
-An existing deployment of Azure Blockchain Workbench can be upgraded to the latest version.
-
-This script automates the upgrade of your Azure Blockchain Workbench deployment. It can be easily invoked from Azure Cloud Shell.
+An existing deployment of Azure Blockchain Workbench can be upgraded to the latest version. This PowerShell script automates the upgrade of your Azure Blockchain Workbench deployment.
 
 To learn what's new in this release, please check our [release notes](releasenotes.md).
 
 Execution Instructions
 =======================
-Log in to the Azure Portal.
+To run this script you need to have the cross-platform [Azure PowerShell](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps) module installed.
 
-Click on the `>_` icon on the top right corner to open Cloud Shell.
-
-![](./media/upgrade-1.png)
-
-This will launch the Cloud Shell within the browser. You’ll be asked to select
-Bash (Linux) or PowerShell (Windows). Click the “PowerShell” link. (ignore the warnings)
+We recommend using [Azure CloudShell](https://shell.azure.com/powershell) since it comes with with all dependencies installed, however, you can run this script on any operating system that has [PowerShell](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-6) and [Az PowerShell](https://docs.microsoft.com/en-us/powershell/azure/install-az-ps) installed.
 
 
-![](./media/upgrade-2.png)
+1. Open [Azure CloudShell](https://shell.azure.com/powershell) and select the tenant Workbench is deployed to.
 
-Locate your Azure subscription ID, and the resource group name where you deployed Azure Blockchain Workbench.
+![CloudShell open](./media/cloudshell-open.png)
 
-Next, run the script by typing the following;
+2. Download the script. You can download the upgrade script automatically by using the command bellow, or you can download it from this repository manually
 
 ```powershell
-# Navigate to your home directory
-cd
+cd; Invoke-WebRequest -Uri https://aka.ms/workbenchUpgradeScript -OutFile azureBlockchainWorkbenchUpgradeToLatest.ps1
 
-# Downloading the script
-Invoke-WebRequest -Uri aka.ms/workbenchUpgradeScript -OutFile workbenchUpgradeScript1.3.ps1
-
-# Running the script
-./workbenchUpgradeScript1.3.ps1 -SubscriptionID <subscription_id> -ResourceGroupName <workbench-resource-group-name>
 ```
 
-![](./media/upgrade-3.png)
-
-You maybe asked to authenticate if you're not currently authenticated. In this case, you will be provided with a link and a code to Authenticate to Azure. Click on the link and copy the code
-
-![](./media/upgrade-4.png)
-![](./media/upgrade-5.png)
-
-When the script completes, it will provide a message informing you of the operation status.
-
-![](./media/upgrade-6.png)
+3. Locate your Azure subscription ID, and the resource group name where you deployed Azure Blockchain Workbench and Execute the script.
 
 
+```powershell
+./azureBlockchainWorkbenchUpgradeToLatest.ps1 -SubscriptionID <subscription_id> -ResourceGroupName <workbench-resource-group-name>
+
+```
+
+![CloudShell run](./media/cloudshell-run.png)
+
+When the upgrade completes, you will see the following message:
+
+```powershell
+Azure Blockchain Workbench in Resource Group $ResourceGroupName was successfully updated to version 1.7.3.
+
+```
+
+> Note: The AAD Application Registration configuration has changed for Workbench 1.5.0. This script does **not** automatically update your Application Registration. If you are upgrading from a version prior to 1.5.0 you need to upgrade your AAD application. Please visit [AAD Upgrade Instructions](https://aka.ms/workbenchAADUpgrade) to update your AAD application.
